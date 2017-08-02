@@ -28,7 +28,8 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
         });
     }
 
-    MeteorologyCsvTableExtractor extractor = new MeteorologyCsvTableExtractor(data.filename.ToString(), data.filecontent.ToString());
+    MeteorologyCsvTableExtractor extractor = new MeteorologyCsvTableExtractor(
+        data.filename.ToString(), data.filecontent.ToString(), -8);
     Meteorology met = extractor.GetMeteorology();
     
     MapFromMeteorologyToCafStandards map = new MapFromMeteorologyToCafStandards();

@@ -16,13 +16,15 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     string jsonContent = await req.Content.ReadAsStringAsync();
     dynamic data = JsonConvert.DeserializeObject(jsonContent);
 
-    if (data.filename == null || data.filecontent == null)
+    if (data.filename == null || 
+        data.filecontent == null ||
+        data.schemaVersion == null)
     {
-        log.Error("filename and filecontents are null");
+        log.Error("filename, filecontents, and/or schemaVersion are null");
         
         return req.CreateResponse(HttpStatusCode.BadRequest, new
         {
-            error = "filename and filecontents are null"
+            error = "filename, filecontents, and/or schemaVersion are null"
         });
     }
 
@@ -31,7 +33,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     
     MapFromMeteorologyToCafStandards map = new MapFromMeteorologyToCafStandards();
     DocumentDbMeasurementTransformer transformer = 
-        new DocumentDbMeasurementTransformer(map, "1.0.0");
+        new DocumentDbMeasurementTransformer(map, data.schemaVersion);
     var measurements = transformer.ToMeasurements(met);
 
     // Ignore null values

@@ -17,16 +17,20 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 
     if (data.filename == null || data.filecontent == null)
     {
+        log.Error("filename and filecontents are null");
+        
         return req.CreateResponse(HttpStatusCode.BadRequest, new
         {
-            error = "Please pass filename and filecontent properties in the input object"
+            error = "filename and filecontents are null"
         });
     }
 
     MeteorologyCsvTableExtractor extractor = new MeteorologyCsvTableExtractor(data.filename.ToString(), data.filecontent.ToString());
     Meteorology met = extractor.GetMeteorology();
     
-    DocumentDbMeasurementTransformer transformer = new DocumentDbMeasurementTransformer();
+    Mappers.MapFromMeteorologyToCAFStandards map = new Mappers.MapFromMeteorologyToCAFStandards();
+    DocumentDbMeasurementTransformer transformer = 
+        new DocumentDbMeasurementTransformer(map, "1.0.0");
     var measurements = transformer.ToMeasurements(met);
 
     // Ignore null values

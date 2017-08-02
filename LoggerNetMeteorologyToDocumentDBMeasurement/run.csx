@@ -33,7 +33,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     
     MapFromMeteorologyToCafStandards map = new MapFromMeteorologyToCafStandards();
     DocumentDbMeasurementTransformer transformer = 
-        new DocumentDbMeasurementTransformer(map, data.schemaVersion);
+        new DocumentDbMeasurementTransformer(map, data.schemaVersion.ToString());
     var measurements = transformer.ToMeasurements(met);
 
     // Ignore null values

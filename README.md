@@ -1,2 +1,2 @@
-# CafMeteorologyEcTower_AzureFunction
-Azure Function Apps for continuous deployment
+# CafMeteorologyECTower_AzureFunctions
+Code for Azure Function Apps for continuous deployment

@@ -1,0 +1,11 @@
+{
+    "frameworks": {
+        "net46": {
+            "dependencies": {
+                "CsvHelper": "2.16.3",
+                "Nsar.Nodes.Models": "1.0.9",
+                "Nsar.Nodes.CafEcTower.LoggerNet": "0.3.0"
+            }
+        }
+    }
+}

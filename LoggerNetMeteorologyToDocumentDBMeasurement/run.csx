@@ -7,6 +7,7 @@ using Nsar.Nodes.Models.LoggerNet.Meteorology;
 using Nsar.Nodes.Models.DocumentDb.Measurement;
 using Nsar.Nodes.CafEcTower.LoggerNet.Transform;
 using Nsar.Nodes.CafEcTower.LoggerNet.Extract;
+using Nsar.Nodes.CafEcTower.LoggerNet.Mappers;
 
 public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 {
@@ -28,7 +29,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     MeteorologyCsvTableExtractor extractor = new MeteorologyCsvTableExtractor(data.filename.ToString(), data.filecontent.ToString());
     Meteorology met = extractor.GetMeteorology();
     
-    Mappers.MapFromMeteorologyToCAFStandards map = new Mappers.MapFromMeteorologyToCAFStandards();
+    MapFromMeteorologyToCafStandards map = new MapFromMeteorologyToCafStandards();
     DocumentDbMeasurementTransformer transformer = 
         new DocumentDbMeasurementTransformer(map, "1.0.0");
     var measurements = transformer.ToMeasurements(met);

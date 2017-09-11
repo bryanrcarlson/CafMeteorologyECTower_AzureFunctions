@@ -2,12 +2,8 @@
 
 using System;
 using System.Net;
+using System.Globalization;
 using Newtonsoft.Json;
-using Nsar.Nodes.Models.LoggerNet.Meteorology;
-using Nsar.Nodes.Models.DocumentDb.Measurement;
-using Nsar.Nodes.CafEcTower.LoggerNet.Transform;
-using Nsar.Nodes.CafEcTower.LoggerNet.Extract;
-using Nsar.Nodes.CafEcTower.LoggerNet.Mappers;
 
 public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 {
@@ -27,32 +23,35 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     }
 
     DateTime newestDT = DateTime.MinValue;
-    var fileNewest;
+    string filePathNewest = "";
     foreach (var file in data)
     {
         string filename = file.Name;
 
         // Expect filename similar to: "cafMET000L_01_20090710_00.csv"
         string[] sections = filename.Split('_');
-        DateTime dt = DateTime.Parse(section[2]);
+        if(sections.Length < 4) break;
 
-        log.Info("dt: " + dt.String());
+        log.Info("sections[2]: " + sections[2]);
+        
+        DateTime dt = DateTime.ParseExact(sections[2], "yyyyMMdd", CultureInfo.InvariantCulture);
+
+        log.Info("dt: " + dt.ToString());
 
         if(dt > newestDT)
         {
+            log.Info("Found newer file.  Path = " + file.Path);
             newestDT = dt;
-            fileNewest = file;
+            filePathNewest = file.Path;
         }
     }
 
-    log.Info("fileNewest: " + fileNewest);
+    log.Info("filePathNewest: " + filePathNewest);
     
-    string result = JsonConvert.SerializeObject(fileNewest,
-        Newtonsoft.Json.Formatting.None);
-    
-    log.Info("result: " + result);
+    //string result = JsonConvert.SerializeObject(filenameNewest,
+    //    Newtonsoft.Json.Formatting.None);
 
     var response = req.CreateResponse(HttpStatusCode.OK);
-    response.Content = new StringContent(results, System.Text.Encoding.UTF8, "application/json");
+    response.Content = new StringContent(filePathNewest, System.Text.Encoding.UTF8, "application/json");
     return response;
 }

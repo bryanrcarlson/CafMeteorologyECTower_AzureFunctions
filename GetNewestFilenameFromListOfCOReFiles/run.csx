@@ -26,13 +26,18 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
         });
     }
 
-    // 
     DateTime newestDT = DateTime.MinValue;
     var fileNewest;
     foreach (var file in data)
     {
         string filename = file.Name;
-        DateTime dt = getDateTimeFromCOReFilename(filename);
+
+        // Expect filename similar to: "cafMET000L_01_20090710_00.csv"
+        string[] sections = filename.Split('_');
+        DateTime dt = DateTime.Parse(section[2]);
+
+        log.Info("dt: " + dt.String());
+
         if(dt > newestDT)
         {
             newestDT = dt;
@@ -50,13 +55,4 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     var response = req.CreateResponse(HttpStatusCode.OK);
     response.Content = new StringContent(results, System.Text.Encoding.UTF8, "application/json");
     return response;
-}
-
-// Expect filename similar to: "cafMET000L_01_20090710_00.csv"
-private function getDateTimeFromCOReFilename(string filename)
-{
-    string[] sections = filename.Split('_');
-    DateTime dt = DateTime.Parse(section[2])
-
-
 }

@@ -11,6 +11,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 
     string jsonContent = await req.Content.ReadAsStringAsync();
     dynamic data = JsonConvert.DeserializeObject(jsonContent);
+    //log.Info("data: " + data.ToString());
 
     if (data == null)
     {
@@ -47,11 +48,12 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     }
 
     log.Info("filePathNewest: " + filePathNewest);
+
+    var returnObj = new {filepath = filePathNewest};
     
-    //string result = JsonConvert.SerializeObject(filenameNewest,
-    //    Newtonsoft.Json.Formatting.None);
+    string result = JsonConvert.SerializeObject(returnObj);
 
     var response = req.CreateResponse(HttpStatusCode.OK);
-    response.Content = new StringContent(filePathNewest, System.Text.Encoding.UTF8, "application/json");
+    response.Content = new StringContent(result, System.Text.Encoding.UTF8, "application/json");
     return response;
 }

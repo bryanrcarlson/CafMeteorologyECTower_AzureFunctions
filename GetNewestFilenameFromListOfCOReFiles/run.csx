@@ -29,13 +29,29 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
     {
         string filename = file.Name;
 
-        // Expect filename similar to: "cafMET000L_01_20090710_00.csv"
+        // Only process csv files
+        if(Path.GetExtension(filename) != ".csv") break;
+
+        // Expect filename similar to: "cafMET000L_01_20090700_00.csv"
         string[] sections = filename.Split('_');
         if(sections.Length < 4) break;
 
-        log.Info("sections[2]: " + sections[2]);
+        string dateString = sections[2];
+
+        log.Info("dateString: " + dateString);
         
-        DateTime dt = DateTime.ParseExact(sections[2], "yyyyMMdd", CultureInfo.InvariantCulture);
+        // If day is "00" then remove it
+        DateTime dt;
+
+        if(dateString.Substring(dateString.Length-2) == "00")
+        {
+            dateString = dateString.Remove(dateString.Length-2);
+            dt = DateTime.ParseExact(dateString, "yyyyMM", CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            dt = DateTime.ParseExact(dateString, "yyyyMMdd", CultureInfo.InvariantCulture);
+        }
 
         log.Info("dt: " + dt.ToString());
 

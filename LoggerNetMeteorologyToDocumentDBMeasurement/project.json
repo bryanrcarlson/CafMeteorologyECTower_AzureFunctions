@@ -3,8 +3,8 @@
         "net46": {
             "dependencies": {
                 "CsvHelper": "2.16.3",
-                "Nsar.Nodes.Models": "1.0.9",
-                "Nsar.Nodes.CafEcTower.LoggerNet": "0.4.0",
+                "Nsar.Nodes.Models": "1.4.1",
+                "Nsar.Nodes.CafEcTower.LoggerNet": "0.5.0",
                 "Nsar.Common.Measure": "0.3.7"
             }
         }

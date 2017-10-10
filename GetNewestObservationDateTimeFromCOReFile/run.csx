@@ -41,9 +41,11 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
             // Get datetime
             log.Info("Date: " + measurements[2]);
             DateTimeOffset dtOffset = DateTimeOffset.Parse(measurements[2], CultureInfo.InvariantCulture);
+            log.Info("dto: " + dtOffset.ToString("s"));
+
             DateTime dtUtc = dtOffset.UtcDateTime;
 
-            log.Info("DateUtc: " + dtUtc.ToString("o"));
+            log.Info("DateUtc: " + dtUtc.ToString("s"));
 
             if(dtUtc > newestDTUtc) newestDTUtc = dtUtc;
         }
@@ -51,7 +53,7 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
 
 
     var returnObj = new {
-        formattedDateTime = newestDTUtc.ToString("o"), 
+        formattedDateTime = newestDTUtc.ToString("s")+"Z", 
         year = newestDTUtc.Year,
         month = newestDTUtc.Month,
         day = newestDTUtc.Day,

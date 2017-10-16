@@ -30,11 +30,11 @@ public static async Task<object> Run(HttpRequestMessage req, TraceWriter log)
         string filename = file.Name;
 
         // Only process csv files
-        if(Path.GetExtension(filename) != ".csv") break;
+        if(Path.GetExtension(filename) != ".csv") continue;
 
         // Expect filename similar to: "cafMET000L_01_20090700_00.csv"
         string[] sections = filename.Split('_');
-        if(sections.Length < 4) break;
+        if(sections.Length < 4) continue;
 
         string dateString = sections[2];
 
